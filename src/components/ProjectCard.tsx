@@ -69,12 +69,20 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           <motion.div
             variants={{ hover: { scale: 1.05 } }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            style={{ background: gradient }}
-            className="w-full h-full flex items-center justify-center"
+            className="w-full h-full"
           >
-            <span className="text-white/90 font-bold text-5xl sm:text-6xl tracking-wider drop-shadow-sm select-none">
-              {initials}
-            </span>
+            <img
+              src={project.image}
+              alt={project.name}
+              className="w-full h-full object-cover object-top"
+              loading="lazy"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.style.display = "none";
+                target.parentElement!.style.background = gradient;
+                target.parentElement!.innerHTML = `<span class="text-white/90 font-bold text-5xl sm:text-6xl tracking-wider drop-shadow-sm select-none flex items-center justify-center w-full h-full">${initials}</span>`;
+              }}
+            />
           </motion.div>
 
           {/* Floating external link icon */}
