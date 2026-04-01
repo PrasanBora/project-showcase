@@ -4,18 +4,16 @@ import { Project, projects } from "../data/projects";
 type UseFilteredProjectsProps = {
   searchQuery: string;
   activeCategory: string;
-  activeIndustry: string;
 };
 
 export function useFilteredProjects({
   searchQuery,
   activeCategory,
-  activeIndustry,
 }: UseFilteredProjectsProps): Project[] {
   return useMemo(() => {
     return projects.filter((project) => {
       const query = searchQuery.toLowerCase().trim();
-      
+
       const matchesSearch =
         query === "" ||
         project.name.toLowerCase().includes(query) ||
@@ -25,10 +23,7 @@ export function useFilteredProjects({
       const matchesCategory =
         activeCategory === "All" || project.category === activeCategory;
 
-      const matchesIndustry =
-        activeIndustry === "All Industries" || project.industry === activeIndustry;
-
-      return matchesSearch && matchesCategory && matchesIndustry;
+      return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, activeCategory, activeIndustry]);
+  }, [searchQuery, activeCategory]);
 }

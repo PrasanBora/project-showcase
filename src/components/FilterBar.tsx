@@ -2,28 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Search, X, ChevronDown } from "lucide-react";
-
-const CATEGORIES = ["All", "Website", "CRM / Dashboard", "Platform", "Mobile"];
-const INDUSTRIES = [
-  "All Industries",
-  "Healthcare",
-  "Legal",
-  "Finance",
-  "SaaS",
-  "Food & Beverage",
-  "Real Estate",
-  "Education",
-  "Other"
-];
+import { Search, X } from "lucide-react";
+import { categories } from "../data/projects";
 
 type FilterBarProps = {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   activeCategory: string;
   setActiveCategory: (c: string) => void;
-  activeIndustry: string;
-  setActiveIndustry: (i: string) => void;
   resultCount: number;
 };
 
@@ -32,8 +18,6 @@ export function FilterBar({
   setSearchQuery,
   activeCategory,
   setActiveCategory,
-  activeIndustry,
-  setActiveIndustry,
   resultCount,
 }: FilterBarProps) {
   const [inputValue, setInputValue] = useState(searchQuery);
@@ -50,24 +34,24 @@ export function FilterBar({
   }, [searchQuery]);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
       className="sticky top-[64px] z-40 bg-white/95 backdrop-blur border-b border-border py-4 mb-12"
     >
       <div className="max-w-[1440px] mx-auto px-6 sm:px-12 lg:px-24 flex flex-col xl:flex-row gap-5 xl:items-center justify-between">
-        
+
         {/* Left Side: Category Tabs */}
         <div className="flex overflow-x-auto no-scrollbar pb-1 xl:pb-0 -mx-6 px-6 xl:mx-0 xl:px-0">
           <div className="flex gap-2 min-w-max">
-            {CATEGORIES.map((cat) => {
+            {categories.map((cat) => {
               const isActive = activeCategory === cat;
               return (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`relative px-6 py-2.5 text-sm font-medium rounded-full transition-colors cursor-pointer ${
+                  className={`relative px-5 py-2 text-sm font-medium rounded-full transition-colors cursor-pointer ${
                     isActive ? "text-white" : "text-text-secondary hover:bg-tag-bg"
                   }`}
                 >
@@ -92,22 +76,6 @@ export function FilterBar({
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center w-full sm:w-auto">
-            {/* Industry Dropdown */}
-            <div className="relative w-full sm:w-auto">
-              <select
-                value={activeIndustry}
-                onChange={(e) => setActiveIndustry(e.target.value)}
-                className="appearance-none w-full sm:w-[200px] px-4 py-2.5 bg-white border border-border rounded-xl text-sm font-medium text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer pr-10 shadow-sm transition-shadow hover:shadow-md"
-              >
-                {INDUSTRIES.map((ind) => (
-                  <option key={ind} value={ind}>
-                    {ind}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-            </div>
-
             {/* Search Input */}
             <div className="relative w-full sm:w-[280px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
@@ -128,7 +96,7 @@ export function FilterBar({
                 </button>
               )}
             </div>
-            
+
             {/* Result count desktop view */}
             <div className="hidden xl:block text-xs font-semibold text-text-muted min-w-[130px] text-right">
               Showing {resultCount} project{resultCount !== 1 ? 's' : ''}

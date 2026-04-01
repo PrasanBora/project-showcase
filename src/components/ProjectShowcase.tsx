@@ -8,18 +8,15 @@ import { useFilteredProjects } from "../hooks/useFilteredProjects";
 export function ProjectShowcase() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [activeIndustry, setActiveIndustry] = useState("All Industries");
 
   const filteredProjects = useFilteredProjects({
     searchQuery,
     activeCategory,
-    activeIndustry,
   });
 
   const handleClearFilters = () => {
     setSearchQuery("");
     setActiveCategory("All");
-    setActiveIndustry("All Industries");
   };
 
   return (
@@ -29,12 +26,10 @@ export function ProjectShowcase() {
         setSearchQuery={setSearchQuery}
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
-        activeIndustry={activeIndustry}
-        setActiveIndustry={setActiveIndustry}
         resultCount={filteredProjects.length}
       />
-      <ProjectGrid 
-        projects={filteredProjects} 
+      <ProjectGrid
+        projects={filteredProjects}
         onClearFilters={handleClearFilters}
       />
     </>
