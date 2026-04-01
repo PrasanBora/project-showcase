@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import type { Project } from "../data/projects";
 
 function getInitials(name: string): string {
@@ -10,25 +10,20 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
+function getLogoUrl(url: string): string {
+  try {
+    const hostname = new URL(url).hostname;
+    return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${hostname}&size=128`;
+  } catch {
+    return "";
+  }
+}
+
 function getDomain(url: string): string {
   try {
     return new URL(url).hostname.replace("www.", "");
   } catch {
     return url;
-  }
-}
-
-function getLogoSources(url: string): string[] {
-  try {
-    const hostname = new URL(url).hostname;
-    const domain = hostname.replace("www.", "");
-    return [
-      `https://img.logo.dev/${domain}?token=pk_a8V0NDJtTnOTUWYz8mYJIQ`,
-      `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${hostname}&size=128`,
-      `https://${hostname}/favicon.ico`,
-    ];
-  } catch {
-    return [];
   }
 }
 
@@ -49,24 +44,10 @@ interface Props {
 }
 
 const ProjectCard: React.FC<Props> = ({ project, index }) => {
-  const [showInitials, setShowInitials] = useState(false);
-  const sourceIndex = useRef(0);
-  const sources = getLogoSources(project.url);
+  const [imgError, setImgError] = useState(false);
+  const logoUrl = getLogoUrl(project.url);
 
-  const handleError = useCallback(() => {
-    sourceIndex.current += 1;
-    if (sourceIndex.current < sources.length) {
-      // Try next source — force re-render won't work with ref, so set src directly
-      const img = document.querySelector(
-        `[data-logo-key="${project.url}"]`
-      ) as HTMLImageElement | null;
-      if (img) {
-        img.src = sources[sourceIndex.current];
-      }
-    } else {
-      setShowInitials(true);
-    }
-  }, [sources, project.url]);
+  const handleError = useCallback(() => setImgError(true), []);
 
   return (
     <a
@@ -77,10 +58,9 @@ const ProjectCard: React.FC<Props> = ({ project, index }) => {
       style={{ animationDelay: `${index * 50}ms` }}
     >
       <div className="card-logo-wrapper">
-        {!showInitials && sources.length > 0 ? (
+        {!imgError && logoUrl ? (
           <img
-            data-logo-key={project.url}
-            src={sources[0]}
+            src={logoUrl}
             alt={`${project.name} logo`}
             className="card-logo"
             loading="lazy"
